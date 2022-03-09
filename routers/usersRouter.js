@@ -10,6 +10,13 @@ const users = [
     age: 58,
     city: "Paris",
   },
+  {
+    id: 2,
+    username: "Jean",
+    email: "jean@gmail.com",
+    age: 65,
+    city: "Paris",
+  },
 ];
 
 const schema = Joi.object({
@@ -27,18 +34,36 @@ router.get("/", (req, res) => {
 router.post("/", (req, res) => {
   const newUser = req.body;
   const validRes = schema.validate(newUser);
-  users.push(validRes);
   if (validRes.error) {
     return res.status(400).json({
       message: validRes.error.details[0].message,
     });
+  } else {
+    users.push(newUser);
   }
   res.json(users);
   console.log("New user added");
 });
 
 router.get("/:username", (req, res) => {
-  res.json(users);
+  const user = users.find((user) => {
+    return req.params.username.toLowerCase() === user.username.toLowerCase();
+  });
+  res.json(user);
+});
+
+router.get("/id/:id", (req, res) => {
+  const user = users.find((user) => {
+    return req.params.id === user.id.toString();
+  });
+  res.json(user);
+});
+
+router.get("/email/:email", (req, res) => {
+  const user = users.find((user) => {
+    return req.params.email === user.email;
+  });
+  res.json(user);
 });
 
 module.exports = router;
