@@ -22,15 +22,17 @@ const users = [
 const schema = Joi.object({
   id: users.length + 1,
   username: Joi.string().min(4).required(),
-  email: Joi.string().email(),
-  age: Joi.number().min(2),
-  city: Joi.string(),
+  email: Joi.string().email().required(),
+  age: Joi.number().min(10).max(160).required(),
+  city: Joi.string().required(),
 });
 
-router.get("/", (req, res) => {
+// Get all users
+router.get("/", (_req, res) => {
   res.json(users);
 });
 
+// Add user to list users
 router.post("/", (req, res) => {
   const newUser = req.body;
   const validRes = schema.validate(newUser);
@@ -45,6 +47,7 @@ router.post("/", (req, res) => {
   console.log("New user added");
 });
 
+// Get user with username
 router.get("/:username", (req, res) => {
   const user = users.find((user) => {
     return req.params.username.toLowerCase() === user.username.toLowerCase();
@@ -52,6 +55,7 @@ router.get("/:username", (req, res) => {
   res.json(user);
 });
 
+// Get user with id
 router.get("/id/:id", (req, res) => {
   const user = users.find((user) => {
     return req.params.id === user.id.toString();
@@ -59,6 +63,7 @@ router.get("/id/:id", (req, res) => {
   res.json(user);
 });
 
+// Get user with email
 router.get("/email/:email", (req, res) => {
   const user = users.find((user) => {
     return req.params.email === user.email;
