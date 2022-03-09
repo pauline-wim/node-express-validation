@@ -4,14 +4,12 @@ const Joi = require("Joi");
 
 const users = [
   {
-    id: 1,
     username: "Paulette",
     email: "paulette@gmail.com",
     age: 58,
     city: "Paris",
   },
   {
-    id: 2,
     username: "Jean",
     email: "jean@gmail.com",
     age: 65,
@@ -20,7 +18,6 @@ const users = [
 ];
 
 const schema = Joi.object({
-  id: users.length + 1,
   username: Joi.string().min(4).required(),
   email: Joi.string().email().required(),
   age: Joi.number().min(10).max(160).required(),
@@ -57,10 +54,13 @@ router.get("/:username", (req, res) => {
 
 // Get user with id
 router.get("/id/:id", (req, res) => {
-  const user = users.find((user) => {
-    return req.params.id === user.id.toString();
-  });
-  res.json(user);
+  const user = users[req.params.id - 1];
+
+  if (!user) {
+    return res.json({ message: `User ID ${req.params.id} doesn't exist` });
+  }
+
+  res.send(user);
 });
 
 // Get user with email
